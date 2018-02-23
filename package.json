@@ -3,7 +3,7 @@
   "version": "0.4.1",
   "description": "a native LRU cache implementation",
   "dependencies": {
-    "nan": "^2.2.0"
+    "nan": "^2.9.2"
   },
   "devDependencies": {
     "chai": "latest",
