@@ -8,13 +8,11 @@
 
 using namespace v8;
 
-#ifdef __APPLE__
-#include <tr1/unordered_map>
-#define unordered_map std::tr1::unordered_map
-#else
+//#include <tr1/unordered_map>
+//#define unordered_map std::tr1::unordered_map
+
 #include <unordered_map>
 #define unordered_map std::unordered_map
-#endif
 
 class LRUCache : public Nan::ObjectWrap {
 

@@ -4,10 +4,6 @@
 
 using namespace v8;
 
-#ifndef __APPLE__
-#include <unordered_map>
-#endif
-
 unsigned long getCurrentTime() {
   timeval tv;
   gettimeofday(&tv, NULL);
