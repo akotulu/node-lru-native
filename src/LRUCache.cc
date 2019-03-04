@@ -10,11 +10,6 @@ unsigned long getCurrentTime() {
   return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-std::string getStringValue(v8::Handle<Value> value) {
-  String::Utf8Value keyUtf8Value(value);
-  return std::string(*keyUtf8Value);
-}
-
 Nan::Persistent<Function> LRUCache::constructor;
 
 NAN_MODULE_INIT(LRUCache::Init) {
@@ -36,29 +31,29 @@ NAN_MODULE_INIT(LRUCache::Init) {
 NAN_METHOD(LRUCache::New) {
   if (info.IsConstructCall()) {
     LRUCache* cache = new LRUCache();
-    
+
     if (info.Length() > 0 && info[0]->IsObject()) {
-      Local<Object> config = info[0]->ToObject();
+      Local<Object> config = info[0].As<v8::Object>();
       Local<Value> prop;
 
       prop = config->Get(Nan::New("maxElements").ToLocalChecked());
       if (!prop->IsUndefined() && prop->IsUint32()) {
-        cache->maxElements = prop->Uint32Value();
+        cache->maxElements = prop.As<v8::Uint32>()->Value();
       }
 
       prop = config->Get(Nan::New("maxAge").ToLocalChecked());
       if (!prop->IsUndefined() && prop->IsUint32()) {
-        cache->maxAge = prop->Uint32Value();
+        cache->maxAge = prop.As<v8::Uint32>()->Value();
       }
 
       prop = config->Get(Nan::New("maxLoadFactor").ToLocalChecked());
       if (!prop->IsUndefined() && prop->IsNumber()) {
-        cache->data.max_load_factor(prop->NumberValue());
+        cache->data.max_load_factor(prop.As<v8::Number>()->Value());
       }
       
       prop = config->Get(Nan::New("size").ToLocalChecked());
       if (!prop->IsUndefined() && prop->IsUint32()) {
-        cache->data.rehash(ceil(prop->Uint32Value() / cache->data.max_load_factor()));
+        cache->data.rehash(ceil(prop.As<v8::Uint32>()->Value() / cache->data.max_load_factor()));
       }
     }
     
@@ -69,7 +64,14 @@ NAN_METHOD(LRUCache::New) {
     const int argc = 1;
     Local<Value> argv[argc] = { info[0] };
     Local<v8::Function> ctor = Nan::New<v8::Function>(constructor);
-    info.GetReturnValue().Set(ctor->NewInstance(argc, argv));
+
+    Nan::MaybeLocal<v8::Object> object = Nan::NewInstance(ctor, argc, argv);
+
+    if (object.IsEmpty()) {
+      info.GetReturnValue().SetUndefined();
+    } else {
+      info.GetReturnValue().Set(object.ToLocalChecked());
+    }
   }
 }
 
@@ -80,7 +82,10 @@ NAN_METHOD(LRUCache::Get) {
     Nan::ThrowRangeError("Incorrect number of arguments for get(), expected 1");
   }
 
-  std::string key = getStringValue(info[0]);
+  const char *key = *Nan::Utf8String(info[0]);
+  if (key == NULL) {
+    Nan::ThrowRangeError("Incorrect key for get(), expected string");
+  }
   const HashMap::const_iterator itr = cache->data.find(key);
 
   // If the specified entry doesn't exist, return undefined.
@@ -115,7 +120,11 @@ NAN_METHOD(LRUCache::Set) {
     Nan::ThrowRangeError("Incorrect number of arguments for set(), expected 2");
   }
 
-  std::string key = getStringValue(info[0]);
+  const char *key = *Nan::Utf8String(info[0]);
+  if (key == NULL) {
+    Nan::ThrowRangeError("Incorrect key for set(), expected string");
+  }
+
   Local<Value> value = info[1];
   const HashMap::iterator itr = cache->data.find(key);
 
@@ -157,11 +166,13 @@ NAN_METHOD(LRUCache::Remove) {
     Nan::ThrowRangeError("Incorrect number of arguments for remove(), expected 1");
   }
 
-  std::string key = getStringValue(info[0]);
-  const HashMap::iterator itr = cache->data.find(key);
+  const char *key = *Nan::Utf8String(info[0]);
+  if (key) {
+    const HashMap::iterator itr = cache->data.find(key);
 
-  if (itr != cache->data.end()) {
-    cache->remove(itr);
+    if (itr != cache->data.end()) {
+      cache->remove(itr);
+    }
   }
 
   info.GetReturnValue().SetUndefined();
