@@ -94,6 +94,12 @@ Returns the number of items in the cache.
 
 Returns a hash containing internal information about the cache.
 
+# Tests
+
+```
+npm test
+```
+
 # Changelog
 
 - 0.4.0 -- Added support for newer versions of Node via NAN

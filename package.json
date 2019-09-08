@@ -1,16 +1,25 @@
 {
   "name": "lru-native",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "a native LRU cache implementation",
   "dependencies": {
-    "nan": "^2.13.1"
+    "nan": "^2.14.0"
   },
   "devDependencies": {
     "chai": "latest",
-    "coffee-script": "1.7.1",
+    "coffeescript": "^2.4.1",
     "mocha": "latest"
   },
   "scripts": {
-    "valgrind": "valgrind --leak-check=full --show-possibly-lost=no node --expose-gc --trace-gc node_modules/mocha/bin/_mocha -R spec --compilers coffee:coffee-script"
+    "test": "mocha",
+    "valgrind": "valgrind --leak-check=full --show-possibly-lost=no node --expose-gc --trace-gc node_modules/mocha/bin/_mocha"
+  },
+  "mocha": {
+    "require": "coffeescript/register",
+    "extension": "coffee",
+    "ui": "bdd",
+    "reporter": "spec",
+    "recursive": true,
+    "timeout": 30000
   }
 }
