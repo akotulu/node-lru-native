@@ -82,11 +82,12 @@ NAN_METHOD(LRUCache::Get) {
     Nan::ThrowRangeError("Incorrect number of arguments for get(), expected 1");
   }
 
-  const char *key = *Nan::Utf8String(info[0]);
-  if (key == NULL) {
+  Nan::Utf8String key(info[0]);
+
+  if (key.length() == 0) {
     Nan::ThrowRangeError("Incorrect key for get(), expected string");
   }
-  const HashMap::const_iterator itr = cache->data.find(key);
+  const HashMap::const_iterator itr = cache->data.find(*key);
 
   // If the specified entry doesn't exist, return undefined.
   if (itr == cache->data.end()) {
@@ -120,13 +121,14 @@ NAN_METHOD(LRUCache::Set) {
     Nan::ThrowRangeError("Incorrect number of arguments for set(), expected 2");
   }
 
-  const char *key = *Nan::Utf8String(info[0]);
-  if (key == NULL) {
+  Nan::Utf8String key(info[0]);
+
+  if (key.length() == 0) {
     Nan::ThrowRangeError("Incorrect key for set(), expected string");
   }
 
   Local<Value> value = info[1];
-  const HashMap::iterator itr = cache->data.find(key);
+  const HashMap::iterator itr = cache->data.find(*key);
 
   if (itr == cache->data.end()) {
     // We're adding a new item. First ensure we have space.
@@ -135,11 +137,11 @@ NAN_METHOD(LRUCache::Set) {
     }
 
     // Add the value to the end of the LRU list.
-    KeyList::iterator pointer = cache->lru.insert(cache->lru.end(), key);
+    KeyList::iterator pointer = cache->lru.insert(cache->lru.end(), *key);
 
     // Add the entry to the key-value map.
     HashEntry* entry = new HashEntry(value, now, pointer);
-    cache->data.insert(std::make_pair(key, entry));
+    cache->data.insert(std::make_pair(*key, entry));
   }
   else {
     // We're replacing an existing value.
@@ -166,9 +168,10 @@ NAN_METHOD(LRUCache::Remove) {
     Nan::ThrowRangeError("Incorrect number of arguments for remove(), expected 1");
   }
 
-  const char *key = *Nan::Utf8String(info[0]);
-  if (key) {
-    const HashMap::iterator itr = cache->data.find(key);
+  Nan::Utf8String key(info[0]);
+
+  if (key.length() > 0) {
+    const HashMap::iterator itr = cache->data.find(*key);
 
     if (itr != cache->data.end()) {
       cache->remove(itr);
