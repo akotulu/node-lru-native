@@ -36,22 +36,22 @@ NAN_METHOD(LRUCache::New) {
       Local<Object> config = info[0].As<v8::Object>();
       Local<Value> prop;
 
-      prop = config->Get(Nan::New("maxElements").ToLocalChecked());
+      prop = Nan::Get(config, Nan::New("maxElements").ToLocalChecked()).ToLocalChecked();
       if (!prop->IsUndefined() && prop->IsUint32()) {
         cache->maxElements = prop.As<v8::Uint32>()->Value();
       }
 
-      prop = config->Get(Nan::New("maxAge").ToLocalChecked());
+      prop = Nan::Get(config, Nan::New("maxAge").ToLocalChecked()).ToLocalChecked();
       if (!prop->IsUndefined() && prop->IsUint32()) {
         cache->maxAge = prop.As<v8::Uint32>()->Value();
       }
 
-      prop = config->Get(Nan::New("maxLoadFactor").ToLocalChecked());
+      prop = Nan::Get(config, Nan::New("maxLoadFactor").ToLocalChecked()).ToLocalChecked();
       if (!prop->IsUndefined() && prop->IsNumber()) {
         cache->data.max_load_factor(prop.As<v8::Number>()->Value());
       }
       
-      prop = config->Get(Nan::New("size").ToLocalChecked());
+      prop = Nan::Get(config, Nan::New("size").ToLocalChecked()).ToLocalChecked();
       if (!prop->IsUndefined() && prop->IsUint32()) {
         cache->data.rehash(ceil(prop.As<v8::Uint32>()->Value() / cache->data.max_load_factor()));
       }
@@ -200,10 +200,10 @@ NAN_METHOD(LRUCache::Stats) {
   LRUCache* cache = ObjectWrap::Unwrap<LRUCache>(info.This());
 
   Local<Object> stats = Nan::New<Object>();
-  stats->Set(Nan::New("size").ToLocalChecked(), Nan::New<Number>(cache->data.size()));
-  stats->Set(Nan::New("buckets").ToLocalChecked(), Nan::New<Number>(cache->data.bucket_count()));
-  stats->Set(Nan::New("loadFactor").ToLocalChecked(), Nan::New<Number>(cache->data.load_factor()));
-  stats->Set(Nan::New("maxLoadFactor").ToLocalChecked(), Nan::New<Number>(cache->data.max_load_factor()));
+  Nan::Set(stats, Nan::New("size").ToLocalChecked(), Nan::New<Number>(cache->data.size()));
+  Nan::Set(stats, Nan::New("buckets").ToLocalChecked(), Nan::New<Number>(cache->data.bucket_count()));
+  Nan::Set(stats, Nan::New("loadFactor").ToLocalChecked(), Nan::New<Number>(cache->data.load_factor()));
+  Nan::Set(stats, Nan::New("maxLoadFactor").ToLocalChecked(), Nan::New<Number>(cache->data.max_load_factor()));
 
   info.GetReturnValue().Set(stats);
 }

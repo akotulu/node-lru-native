@@ -1,9 +1,9 @@
 {
   "name": "lru-native",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "a native LRU cache implementation",
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.15.0"
   },
   "devDependencies": {
     "chai": "latest",
