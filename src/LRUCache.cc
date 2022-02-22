@@ -1,13 +1,11 @@
 #include "LRUCache.h"
-#include <sys/time.h>
+#include <chrono>
 #include <math.h>
 
 using namespace v8;
 
 unsigned long getCurrentTime() {
-  timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+  return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 Nan::Persistent<Function> LRUCache::constructor;

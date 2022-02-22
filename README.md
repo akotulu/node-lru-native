@@ -102,6 +102,8 @@ npm test
 
 # Changelog
 
+- 0.5.1 -- Added Windows support
+- 0.5.0 -- Updated source to nan v2.15
 - 0.4.0 -- Added support for newer versions of Node via NAN
 - 0.3.0 -- Changed memory allocation strategy, fixed issue where remove() would do a seek through the LRU list, code cleanup
 - 0.2.0 -- Fixed issue where maxAge-based removal would result in a seek through the LRU list
