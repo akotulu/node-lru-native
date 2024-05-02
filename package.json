@@ -1,13 +1,13 @@
 {
   "name": "lru-native",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "a native LRU cache implementation",
   "dependencies": {
-    "nan": "^2.15.0"
+    "nan": "^2.19.0"
   },
   "devDependencies": {
     "chai": "latest",
-    "coffeescript": "^2.4.1",
+    "coffeescript": "^2.7.0",
     "mocha": "latest"
   },
   "scripts": {

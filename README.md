@@ -5,13 +5,13 @@ This is an implementation of a simple in-memory cache for node.js, supporting LR
 and TTL expirations.
 
 It was developed as an alternative to the (excellent) [node-lru-cache](https://github.com/isaacs/node-lru-cache)
-library for use with hashes with a very large number of items. V8 normally does a good job of optimizing the
+library for use with hashes with a huge number of items. V8 normally does a good job of optimizing the
 in-memory representation of objects, but it isn't optimized for an object that holds a huge amount of data.
-When you add a very large number of properties (particularly with non-integer keys) to an object, performance
+When you add a huge number of properties (particularly with non-integer keys) to an object, performance
 begins to suffer.
 
 Rather than rely on V8 to figure out what we're trying to do, `node-lru-native` is a light wrapper around
-`std::unordered_map` from C++11. A `std::list` is used to track accesses so we can evict the least-recently-used
+`std::unordered_map` from C++11. A `std::list` is used to track accesses, so we can evict the least-recently-used
 item when necessary.
 
 Based on the [node-hashtable](https://github.com/isaacbwagner/node-hashtable) library by Issac Wagner.
@@ -102,6 +102,7 @@ npm test
 
 # Changelog
 
+- 0.5.2 -- Updated `nan` version
 - 0.5.1 -- Added Windows support
 - 0.5.0 -- Updated source to nan v2.15
 - 0.4.0 -- Added support for newer versions of Node via NAN
